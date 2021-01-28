@@ -24,7 +24,7 @@ echo ""
 echo "Setuid files: largest files by owner and size"
 echo "============="
 find / -type f -executable -perm -4000 -exec ls -lh {} + 2>/dev/null | sort -k 5 -hr | head -n 12 |awk '{print $3, $5, $9}'
-
+# not too sure how to approach this other than adding the exec command so that ls is executed on every line/file found with the human readable option
 echo ""
 # for the task, add
 # commands to display a title
