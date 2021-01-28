@@ -18,11 +18,10 @@
 echo "Setuid files:"
 echo "============="
 find / -type f -executable -perm -4000 -ls 2>/dev/null | sort -k 5
-
 echo ""
 
 
-echo "Setuid files:"
+echo "Setuid files: largest files by owner and size"
 echo "============="
 find / -type f -executable -perm -4000 -exec ls -lh {} + 2>/dev/null | sort -k 5 -hr | head -n 12 |awk '{print $3, $5, $9}'
 
