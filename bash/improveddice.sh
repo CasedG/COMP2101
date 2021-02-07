@@ -26,6 +26,8 @@ echo "Rolled $die1, $die2"
 
 totalSum=$((die1 + die2))
 numberOfDies=2
-dieAverage=$(($totalSum/$numberOfDies))
+dieAverage=$(bc <<< "scale=2;$totalSum/$numberOfDies")
+
+#dieAverage=$(($totalSum/$numberOfDies))
 
 echo "The total sum of both dies is $totalSum, and the average is $dieAverage"
