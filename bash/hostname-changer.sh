@@ -30,5 +30,4 @@ sudo sed -i 's/$hostName/$desiredHostname/' /etc/hosts && echo "Hostname has bee
 # If that hostname is not the current hostname, change it using the hostnamectl command and
 #     tell the user you changed the current hostname and they should reboot to make sure the new name takes full effect
 #e.g. hostnamectl set-hostname $newname
-test $(hostname) = $desiredHostname || (hostnamectl set-hostname $desiredHostname) &&
-  echo "Please reboot to make sure the new hostname takes affect"
+test $(hostname) = $desiredHostname || (hostnamectl set-hostname $desiredHostname); echo "Please reboot to make sure the new hostname takes affect"
