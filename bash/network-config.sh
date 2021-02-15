@@ -85,6 +85,8 @@
 hostName=$(hostname)
 interfaceName=$(ip a | awk '/: e/{gsub(/:/,""); print $2}' | awk 'NR==1')
 #I'll substitute the interfaceName into those areas that replace the expression
+#added 'awk NR==1' to help fix issue on production server with the script producing two en values: ens33 and ens34
+
 lanAddress=$(ip a s $interfaceName |awk '/inet /{gsub(/\/.*/,"");print $2}')
 #I can then use lanAddress to substitute a part of the code for LAN hostname
 lanHostNameAndIp=$(getent hosts $lanAddress)
