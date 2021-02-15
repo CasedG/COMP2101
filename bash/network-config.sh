@@ -90,13 +90,14 @@ interfaceName=$(ip a | awk '/: e/{gsub(/:/,""); print $2}' | awk 'NR==1')
 lanAddress=$(ip a s $interfaceName |awk '/inet /{gsub(/\/.*/,"");print $2}')
 #I can then use lanAddress to substitute a part of the code for LAN hostname
 lanHostNameAndIp=$(getent hosts $lanAddress)
-
+#
+#
 lanHostName=$( echo $lanHostNameAndIp |awk '{print $2}')
 #I was having trouble with lanHostName until I added echo in front of lanHostNameAndIp which i guess allows awk to work with it
-
+#
 externalIP=$(curl -s icanhazip.com)
 externalName=$(getent hosts $externalIP | awk '{print $2}')
-
+#
 cat <<EOF
 Hostname        : $hostName
 LAN Address     : $lanAddress
