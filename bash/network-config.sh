@@ -83,9 +83,9 @@
 # I was able to deduce that the interface name is found using "ip a | awk '/: e/{gsub(/:/,"");print $2}')'"
 
 hostName=$(hostname)
-interfaceName=$(ip a | awk '/: e/{gsub(/:/,""); print $2}')
+interfaceName=$(ip a | awk '/: e/{gsub(/:/,""); print $2}' | awk 'NR==1')
 #I'll substitute the interfaceName into those areas that replace the expression
-lanAddress=$(ip a s $interfaceName |awk '/inet / N==1{gsub(/\/.*/,"");print $2}')
+lanAddress=$(ip a s $interfaceName |awk '/inet /{gsub(/\/.*/,"");print $2}')
 #I can then use lanAddress to substitute a part of the code for LAN hostname
 lanHostNameAndIp=$(getent hosts $lanAddress)
 
