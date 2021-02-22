@@ -47,12 +47,39 @@ else
   verbose="yes"
 fi
 
-allInterfaces=$(ip a | awk '/: e/{print $2}')
-echo ${allInterfaces[0]}
 
-for (( count=0; count < ${#allInterfaces[@]}; count++ )); do
-  echo ${allInterfaces[count]}
+
+#TASK TWO
+#list all the interfaces to the user - use awk to extract data from 'ip a'
+allInterfaces=$(ip a | awk '/: e/{print $2}')
+echo "All interfaces: "
+echo $allInterfaces
+#to determine how many times the loop needs to run, I need to know how many interfaces there are
+numberOfInterfaces=$( ip a | awk '/: e/{print $2}' | wc -l )
+for (( count=1; count <= $numberOfInterfaces; count++ )); do
+  interface=$(ip a | awk '/: e/ {print $2}' | awk "NR==$count")
+  verbose='yes'
+  [ "$verbose" = "yes" ] && echo "Reporting on interface: $interface"
+  [ "$verbose" = "yes" ] && echo "Getting IPV4 address and name for interface $interface"
+  ipv4_address=$(ip a s $interface|awk -F '[/ ]+' '/inet /{print $3}')
+  ipv4_hostname=$(getent hosts $ipv4_address | awk '{print $2}')
+  [ "$verbose" = "yes" ] && echo "Getting IPV4 network block info and name for interface $interface"
+  network_address=$(ip route list dev $interface scope link|cut -d ' ' -f 1)
+  network_number=$(cut -d / -f 1 <<<"$network_address")
+  network_name=$(getent networks $network_number|awk '{print $1}')
+  cat <<EOF
+  Interface $interface:
+  ===============
+  Address         : $ipv4_address
+  Name            : $ipv4_hostname
+  Network Address : $network_address
+  Network Name    : $network_name
+EOF
 done
+
+
+
+
 
 
 #####
@@ -103,6 +130,30 @@ EOF
 
 
 
+
+
+if [ $# -eq 1 -a "$1" = "e*" ]; then
+  verbose='no'
+  interface="$1"
+  [ "$verbose" = "yes" ] && echo "Reporting on interface(s): $interface"
+  [ "$verbose" = "yes" ] && echo "Getting IPV4 address and name for interface $interface"
+  ipv4_address=$(ip a s $interface|awk -F '[/ ]+' '/inet /{print $3}')
+  ipv4_hostname=$(getent hosts $ipv4_address | awk '{print $2}')
+  [ "$verbose" = "yes" ] && echo "Getting IPV4 network block info and name for interface $interface"
+  network_address=$(ip route list dev $interface scope link|cut -d ' ' -f 1)
+  network_number=$(cut -d / -f 1 <<<"$network_address")
+  network_name=$(getent networks $network_number|awk '{print $1}')
+  cat <<EOF
+  Interface $interface:
+  ===============
+  Address         : $ipv4_address
+  Name            : $ipv4_hostname
+  Network Address : $network_address
+  Network Name    : $network_name
+EOF
+else
+  verbose='yes'
+fi
 
 
 
