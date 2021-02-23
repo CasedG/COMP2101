@@ -80,6 +80,7 @@ while [ $# -gt 0 ]; do
     Router Name   : $default_router_name
     External IP   : $external_address
     External Name : $external_name
+
 EOF
   break
   fi
@@ -98,6 +99,7 @@ EOF
     Name            : $ipv4_hostname
     Network Address : $network_address
     Network Name    : $network_name
+
 EOF
   break
   fi
