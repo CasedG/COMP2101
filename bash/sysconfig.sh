@@ -22,18 +22,18 @@ function error-message {
 # Usage:
 #   error-exit ["some text to print to stderr" [exit-status]]
 function error-exit {
-  echo "some error-exit text to print to stderr; also will exit with an exit status of 2" >&2
+  echo "Some error-exit text to print to stderr; also will exit with an exit status of 2" >&2
   exit 2
 }
 #This function displays help information if the user asks for it on the command line or gives us a bad command line
 function displayhelp {
-  echo "this is some general help to explain the purpose of sysconfig.sh which is to display hardware details"
+  echo "This is some general help to explain the purpose of sysconfig.sh which is to display hardware details"
 }
 
 # This function will remove all the temp files created by the script
 function cleanup {
   rm /tmp/*.$$
-  echo "all tmp files created by this script have now been deleted"
+  echo "All tmp files created by this script have now been deleted"
 }
 
 trap cleanup SIGINT
