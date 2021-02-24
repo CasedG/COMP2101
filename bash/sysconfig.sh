@@ -27,7 +27,7 @@ function error-exit {
 }
 #This function displays help information if the user asks for it on the command line or gives us a bad command line
 function displayhelp {
-  echo "This is some general help to explain the purpose of sysconfig.sh which is to display hardware details"
+  echo "This is some general help to explain the purpose of sysconfig.sh which is to display hardware details" >&2
 }
 
 # This function will remove all the temp files created by the script
