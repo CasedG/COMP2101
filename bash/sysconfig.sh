@@ -34,6 +34,7 @@ function displayhelp {
 function cleanup {
   rm /tmp/*.$$
   echo "All tmp files created by this script have now been deleted"
+  exit
 }
 
 trap cleanup SIGINT
