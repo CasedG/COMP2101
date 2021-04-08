@@ -3,7 +3,24 @@
 ""
 function systemHardware {
     "System Hardware Description" 
-    $systemHardwareDescription = Get-WmiObject -class win32_computersystem | fl
+    $systemHardwareDescription = Get-WmiObject -class win32_computersystem | 
+        foreach {
+            New-Object -TypeName psobject -Property @{
+                Domain = $_.domain
+                Manufacturer = $_.manufacturer
+                Model = $_.model
+                Name = $_.name
+                PrimaryOwnerName=$_.primaryownername
+                "TotalPhysicalMemory(MB)"=$_.totalphysicalmemory/1mb -as [float]
+                }
+            } |
+    fl Domain,
+        Manufacturer,
+        Model,
+        Name,
+        PrimaryOwnerName,
+        "TotalPhysicalMemory(MB)"
+        
     $systemHardwareDescription
     }
 systemHardware
@@ -12,7 +29,14 @@ systemHardware
 
 function osNameVersion {
     "OS Name and Version Number"
-    $osNameandVersion = Get-WmiObject -class win32_operatingsystem | fl Name, Version
+    $osNameandVersion = Get-WmiObject -class win32_operatingsystem |
+        foreach {
+            new-object -TypeName psobject -Property @{
+                Name = ($_.name).substring(0, 20) 
+                Version = $_.version
+                }
+            } |
+    fl Name, Version
     $osNameandVersion
     }
 osNameVersion
@@ -21,8 +45,62 @@ osNameVersion
 
 function processorDescription {
     "Processor Description"
-    $processorDescription = Get-WmiObject -class win32_processor | fl Description, NumberOfCores, L2CacheSize, L3CacheSize 
+    $processorDescription = Get-WmiObject -class win32_processor |
+        foreach {
+            new-object -TypeName psobject -Property @{
+                Description = switch ($_.description) {
+                    $null {
+                        "Data Unavailable"
+                        }
+                    default {
+                        $_
+                        }
+                    }
+                NumberOfCores = switch ($_.NumberOfCores) {
+                      $null {
+                      "Data Unavailable"
+                      }
+                      default {
+                        $_
+                        }
+                    }
+                L1CacheSize = switch ($_.L1CacheSize) {
+                    $null {
+                        "Data Unavailable"
+                        }
+                    default {
+                       $_/1mb
+                       }
+                   }  
+                L2CacheSize = switch ($_.L2CacheSize) {
+                    $null {
+                        "Data Unavailable"
+                        }
+                    default {
+                       $_/1mb
+                       }
+                   }            
+                L3CacheSize = switch ($_.L3CacheSize) {
+                    $null {
+                        "data unavailable"
+                        }
+                     default {
+                        $_/1mb
+                        }
+                    }
+            }
+        } |   
+        fl Description, 
+           NumberOfCores,
+           L1CacheSize, 
+           L2CacheSize, 
+           L3CacheSize 
     $processorDescription
+#just for self - add switch commands to every property value to determine if empty or not 
+#
+#
+#
+#
     }
 processorDescription
 ""
@@ -89,8 +167,14 @@ networkAdapter
 ""
 function videoCard {
     "Video Card Summary"
-    get-wmiobject -class win32_videocontroller | fl Name, Description, CurrentHorizontalResolution, CurrentVerticalResolution
-    $videoSummary = Get-WmiObject -class win32_videocontroller
+    get-wmiobject -class win32_videocontroller | fl Name, Description
+    $videoSummary = Get-WmiObject -class win32_videocontroller 
+    $horizontal = ($videoSummary).CurrentHorizontalResolution
+    $vertical = ($videoSummary).CurrentVerticalResolution
+    "Current screen resolution is $horizontal pixels by $vertical pixels"
+    ""
+    ""
     }
+    
 videoCard
 
