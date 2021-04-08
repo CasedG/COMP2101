@@ -96,11 +96,6 @@ function processorDescription {
            L2CacheSize, 
            L3CacheSize 
     $processorDescription
-#just for self - add switch commands to every property value to determine if empty or not 
-#
-#
-#
-#
     }
 processorDescription
 ""
