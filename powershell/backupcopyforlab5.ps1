@@ -1,12 +1,50 @@
-﻿param ($System = "",
-	$Disks = "",
-	$Network = "")
+﻿""
+""
+""
+function systemHardware {
+    "System Hardware Description" 
+    $systemHardwareDescription = Get-WmiObject -class win32_computersystem | 
+        foreach {
+            New-Object -TypeName psobject -Property @{
+                Domain = $_.domain
+                Manufacturer = $_.manufacturer
+                Model = $_.model
+                Name = $_.name
+                PrimaryOwnerName=$_.primaryownername
+                "TotalPhysicalMemory(MB)"=$_.totalphysicalmemory/1mb -as [float]
+                }
+            } |
+    fl Domain,
+        Manufacturer,
+        Model,
+        Name,
+        PrimaryOwnerName,
+        "TotalPhysicalMemory(MB)"
+        
+    $systemHardwareDescription
+    }
+systemHardware
+""
+""
 
+function osNameVersion {
+    "OS Name and Version Number"
+    $osNameandVersion = Get-WmiObject -class win32_operatingsystem |
+        foreach {
+            new-object -TypeName psobject -Property @{
+                Name = ($_.name).substring(0, 20) 
+                Version = $_.version
+                }
+            } |
+    fl Name, Version
+    $osNameandVersion
+    }
+osNameVersion
+""
+""
 
-
-#display CPU, OS, RAM, and Video reports if user enters System
-if ($System -eq "System") {
-    "CPU - Processor Description"
+function processorDescription {
+    "Processor Description"
     $processorDescription = Get-WmiObject -class win32_processor |
         foreach {
             new-object -TypeName psobject -Property @{
@@ -58,20 +96,12 @@ if ($System -eq "System") {
            L2CacheSize, 
            L3CacheSize 
     $processorDescription
+    }
+processorDescription
 ""
 ""
-    "OS Name and Version Number"
-    $osNameandVersion = Get-WmiObject -class win32_operatingsystem |
-        foreach {
-            new-object -TypeName psobject -Property @{
-                Name = ($_.name).substring(0, 20) 
-                Version = $_.version
-                }
-            } |
-    fl Name, Version
-    $osNameandVersion
-""
-""
+
+function summaryRAM {
     "Summary of RAM"
     $totalCapacity = 0
 
@@ -93,20 +123,14 @@ if ($System -eq "System") {
                                Slot
 
     "Total RAM: ${totalCapacity}MB"
+    }
+summaryRAM
 ""
 ""
- "Video Card Summary"
-    get-wmiobject -class win32_videocontroller | fl Name, Description
-    $videoSummary = Get-WmiObject -class win32_videocontroller 
-    $horizontal = ($videoSummary).CurrentHorizontalResolution
-    $vertical = ($videoSummary).CurrentVerticalResolution
-    "Current screen resolution is $horizontal pixels by $vertical pixels"
-    ""
-    ""
-}
+""
+""
 
-#display Disks report only if "Disks" is entered
-if ($Disks -eq "Disks") {
+function diskDrives {
     "Summary of disk drives"
     $diskdrives = get-ciminstance cim_diskdrive
     foreach ($disk in $diskdrives) {
@@ -122,10 +146,30 @@ if ($Disks -eq "Disks") {
             }
         }
     }
-}
-#display Network report only if "Network" entered
-if ($Network -eq "Network") {
+    }
+diskDrives
+""
+""
+""
+
+function networkAdapter {
     "Network Adapter Configuration"
     get-ciminstance win32_networkadapterconfiguration | where-object ipenabled -eq "True" | format-table Description, Index, IPaddress, IPsubnet, DNSDomain, DNSHostName 
-}
-   
+    }
+networkAdapter
+""
+""
+""
+function videoCard {
+    "Video Card Summary"
+    get-wmiobject -class win32_videocontroller | fl Name, Description
+    $videoSummary = Get-WmiObject -class win32_videocontroller 
+    $horizontal = ($videoSummary).CurrentHorizontalResolution
+    $vertical = ($videoSummary).CurrentVerticalResolution
+    "Current screen resolution is $horizontal pixels by $vertical pixels"
+    ""
+    ""
+    }
+    
+videoCard
+
