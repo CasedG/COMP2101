@@ -19,7 +19,9 @@ echo "Setuid files:"
 echo "============="
 find / -type f -executable -perm -4000 -ls 2>/dev/null | sort -k 5
 echo ""
-
+#professors sort command will not work with his find command (sorts by the fifth field, yes, 
+#but it does not organize the numbers, and when you try to use the -n option, it fails to organize it
+#prof only gave me 2 out 3 marks for this despite using the files as indicated with his command so be cautious/speak up
 
 echo "Setuid files: largest files by owner and size"
 echo "============="
@@ -30,3 +32,9 @@ echo ""
 # commands to display a title
 # commands to make a list of the 12 biggest files
 # sort/format whatever to display the list properly
+#
+#how to make the prof's command work with sort 
+find / -type f -executable -perm 4000 -ls 2>/dev/null |awk '{print$6,$7,$11}' | sort -k2nr | head -n 12
+# so remove all the xtra shit first with awk so you have only what you need to work with
+#sort by the second field using n and r options (to sort by numbers and to do it in reverse order)
+#so taht you can then use the head command (or use tail ifyou didn't specify -r with sort) 
