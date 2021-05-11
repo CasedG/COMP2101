@@ -19,9 +19,9 @@ echo "Setuid files:"
 echo "============="
 find / -type f -executable -perm -4000 -ls 2>/dev/null | sort -k 5
 echo ""
-#professors sort command will not work with his find command (sorts by the fifth field, yes, 
+#this sort command will not work with the find command (sorts by the fifth field, yes, 
 #but it does not organize the numbers, and when you try to use the -n option, it fails to organize it
-#prof only gave me 2 out 3 marks for this despite using the files as indicated with his command so be cautious/speak up
+
 
 echo "Setuid files: largest files by owner and size"
 echo "============="
